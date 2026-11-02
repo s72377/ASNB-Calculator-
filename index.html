@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASNB Investment Analysis Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #172033;
+}
+
+.container {
+    max-width: 1180px;
+    margin: auto;
+    padding: 24px;
+}
+
+header {
+    background: linear-gradient(135deg, #173b72, #285ca8);
+    color: white;
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0;
+    opacity: .9;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+}
+
+h2 {
+    margin-top: 0;
+    color: #173b72;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ccd5e2;
+    border-radius: 9px;
+    font-size: 15px;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 18px;
+    background: #173b72;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: .9;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.kpi {
+    background: #f0f5fc;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.kpi small {
+    display: block;
+    color: #65738a;
+    margin-bottom: 7px;
+}
+
+.kpi strong {
+    font-size: 21px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e3e8ef;
+    text-align: right;
+}
+
+th:first-child,
+td:first-child {
+    text-align: center;
+}
+
+th {
+    background: #edf3fb;
+    color: #173b72;
+}
+
+.small {
+    font-size: 13px;
+    color: #68758a;
+}
+
+.note {
+    background: #fff8df;
+    border-left: 4px solid #e4ae21;
+    padding: 12px;
+    border-radius: 7px;
+    font-size: 13px;
+}
+
+.info {
+    background: #edf5ff;
+    border-left: 4px solid #285ca8;
+    padding: 12px;
+    border-radius: 7px;
+    font-size: 13px;
+}
+
+canvas {
+    max-height: 380px;
+    margin-top: 20px;
+}
+
+.section-number {
+    display: inline-block;
+    background: #173b72;
+    color: white;
+    padding: 5px 9px;
+    border-radius: 7px;
+    margin-right: 7px;
+    font-size: 13px;
+}
+
+@media(max-width:760px) {
+
+    .grid,
+    .grid3 {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    header {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>ASNB Investment Analysis Dashboard</h1>
+    <p>Person A vs Person B • Dividend Illustration • Long-Term Projection • Zakat</p>
+</header>
+
+
+<!-- =====================================================
+     1. PERSON A VS PERSON B
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">1</span>
+    Person A vs Person B – Investment Inputs
+</h2>
+
+<div class="grid">
+
+<div>
+<label>Person A – Monthly Investment (RM)</label>
+<input
+    id="monthly"
+    type="number"
+    value="500"
+    min="0"
+>
+</div>
+
+
+<div>
+<label>Person B – Annual Lump-Sum Investment (RM)</label>
+<input
+    id="annual"
+    type="number"
+    value="6000"
+    min="0"
+>
+</div>
+
+
+<div>
+<label>Investment Period (Years)</label>
+<input
+    id="years"
+    type="number"
+    value="10"
+    min="1"
+    max="50"
+>
+</div>
+
+
+<div>
+<label>Estimated Annual Dividend / Distribution Rate (%)</label>
+<input
+    id="rate"
+    type="number"
+    value="5"
+    min="0"
+    step="0.1"
+>
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button onclick="calculate()">
+    Calculate
+</button>
+
+<button onclick="downloadPDF()">
+    Download PDF Report
+</button>
+
+</div>
+
+
+<p class="small">
+    This dashboard provides a simplified mathematical illustration
+    for comparison purposes. Actual ASNB distribution calculations
+    may depend on the specific fund and official calculation method.
+</p>
+
+</div>
+
+
+
+<!-- =====================================================
+     2. SUMMARY
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">2</span>
+    Investment Summary
+</h2>
+
+<div class="grid3">
+
+<div class="kpi">
+<small>Person A Final Value</small>
+<strong id="aFinal">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Person B Final Value</small>
+<strong id="bFinal">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Difference</small>
+<strong id="difference">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Person A Total Contribution</small>
+<strong id="aContrib">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Person B Total Contribution</small>
+<strong id="bContrib">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Dividend / Gain Difference</small>
+<strong id="gainDiff">RM0.00</strong>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     3. COMPARISON TABLE
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">3</span>
+    Person A vs Person B Comparison
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Year</th>
+<th>Person A Contribution</th>
+<th>Person A Value</th>
+<th>Person B Contribution</th>
+<th>Person B Value</th>
+</tr>
+
+</thead>
+
+<tbody id="comparisonBody"></tbody>
+
+</table>
+
+</div>
+
+
+
+<!-- =====================================================
+     4. SCENARIO ANALYSIS
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">4</span>
+    Scenario Analysis
+</h2>
+
+<p class="small">
+    Scenarios are mathematical illustrations only and should
+    not be interpreted as guaranteed returns or predictions.
+</p>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Scenario</th>
+<th>Rate</th>
+<th>Person A Final Value</th>
+<th>Person B Final Value</th>
+<th>A − B</th>
+</tr>
+
+</thead>
+
+<tbody id="scenarioBody"></tbody>
+
+</table>
+
+</div>
+
+
+
+<!-- =====================================================
+     5. LONG TERM PROJECTION
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">5</span>
+    Long-Term Projection
+</h2>
+
+
+<div class="grid3">
+
+<div class="kpi">
+<small>5 Years – Person A</small>
+<strong id="a5">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>10 Years – Person A</small>
+<strong id="a10">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>20 Years – Person A</small>
+<strong id="a20">RM0.00</strong>
+</div>
+
+</div>
+
+
+<canvas id="growthChart"></canvas>
+
+
+<table>
+
+<thead>
+
+<tr>
+<th>Year</th>
+<th>Person A Value</th>
+<th>Person B Value</th>
+<th>A − B</th>
+</tr>
+
+</thead>
+
+<tbody id="longBody"></tbody>
+
+</table>
+
+</div>
+
+
+
+<!-- =====================================================
+     6. SENSITIVITY ANALYSIS
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">6</span>
+    Investment Sensitivity
+</h2>
+
+<p class="small">
+    This analysis shows how different monthly investment amounts
+    may affect the estimated final value of Person A.
+</p>
+
+
+<table>
+
+<thead>
+
+<tr>
+<th>Monthly Investment</th>
+<th>Total Contribution</th>
+<th>Estimated Final Value</th>
+<th>Estimated Gain</th>
+</tr>
+
+</thead>
+
+<tbody id="sensitivityBody"></tbody>
+
+</table>
+
+</div>
+
+
+
+<!-- =====================================================
+     7. VARIABLE PRICE FUND
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">7</span>
+    Variable-Price Fund Illustration
+</h2>
+
+
+<div class="grid">
+
+<div>
+<label>Investment Amount (RM)</label>
+<input
+    id="vpInvest"
+    type="number"
+    value="5000"
+>
+</div>
+
+
+<div>
+<label>Purchase NAV (RM)</label>
+<input
+    id="vpBuy"
+    type="number"
+    value="0.50"
+    step="0.01"
+>
+</div>
+
+
+<div>
+<label>Current / Selling NAV (RM)</label>
+<input
+    id="vpSell"
+    type="number"
+    value="0.55"
+    step="0.01"
+>
+</div>
+
+
+<div>
+<label>Distribution Rate (%)</label>
+<input
+    id="vpRate"
+    type="number"
+    value="3"
+    step="0.1"
+>
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button onclick="variableCalc()">
+    Calculate Variable-Price Illustration
+</button>
+
+</div>
+
+
+<div class="grid3" style="margin-top:15px">
+
+<div class="kpi">
+<small>Units</small>
+<strong id="vpUnits">0</strong>
+</div>
+
+<div class="kpi">
+<small>Market Value</small>
+<strong id="vpValue">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Estimated Total Gain</small>
+<strong id="vpGain">RM0.00</strong>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     8. ZAKAT
+===================================================== -->
+
+<div class="card">
+
+<h2>
+    <span class="section-number">8</span>
+    Zakat Illustration
+</h2>
+
+
+<div class="grid">
+
+<div>
+<label>Investment / Balance (RM)</label>
+<input
+    id="zBalance"
+    type="number"
+    value="10000"
+>
+</div>
+
+
+<div>
+<label>Nisab Threshold (RM)</label>
+<input
+    id="zNisab"
+    type="number"
+    value="30000"
+>
+</div>
+
+
+<div>
+<label>Zakat Rate (%)</label>
+<input
+    id="zRate"
+    type="number"
+    value="2.5"
+    step="0.1"
+>
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button onclick="zakatCalc()">
+    Calculate Zakat Illustration
+</button>
+
+</div>
+
+
+<div class="grid3" style="margin-top:15px">
+
+<div class="kpi">
+<small>Estimated Zakat</small>
+<strong id="zakat">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Net Amount After Zakat</small>
+<strong id="zNet">RM0.00</strong>
+</div>
+
+<div class="kpi">
+<small>Status</small>
+<strong id="zStatus">—</strong>
+</div>
+
+</div>
+
+
+<p class="note">
+
+Zakat rules, nisab treatment and calculation methods may differ
+depending on the relevant state, authority and investment product.
+This section is an educational illustration and should be verified
+with the relevant zakat authority.
+
+</p>
+
+</div>
+
+
+
+<!-- =====================================================
+     PROJECT PURPOSE
+===================================================== -->
+
+<div class="card">
+
+<h2>Project Purpose</h2>
+
+<p>
+
+This dashboard is developed to help illustrate the difference
+between regular monthly investment and annual lump-sum investment.
+It can support customer education by presenting calculations,
+comparisons, scenarios and long-term investment illustrations
+in an easy-to-understand format.
+
+</p>
+
+
+<div class="info">
+
+<strong>Potential business use:</strong>
+
+The dashboard can help staff explain different investment
+strategies to customers through numerical examples and
+visual comparisons. It may also support customer understanding
+of regular investing and long-term investment planning.
+
+</div>
+
+
+<ul>
+
+<li>
+Compare Person A monthly investment with Person B annual
+lump-sum investment.
+</li>
+
+<li>
+Illustrate the effect of different dividend/distribution rates.
+</li>
+
+<li>
+Show long-term accumulated value and estimated gain.
+</li>
+
+<li>
+Provide sensitivity analysis for different monthly
+investment amounts.
+</li>
+
+<li>
+Provide a simple variable-price fund illustration.
+</li>
+
+<li>
+Provide a simple educational zakat illustration.
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   BASIC FUNCTIONS
+===================================================== */
+
+let chart;
+
+
+/* Currency format */
+
+function money(number) {
+
+    return "RM" + Number(number || 0).toLocaleString(
+        "en-MY",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PERSON A – MONTHLY INVESTMENT
+===================================================== */
+
+function monthlyFV(monthly, years, rate) {
+
+    const r = rate / 100 / 12;
+
+    const n = years * 12;
+
+    if (r === 0) {
+
+        return monthly * n;
+
+    }
+
+    return monthly *
+        (
+            (Math.pow(1 + r, n) - 1) / r
+        );
+
+}
+
+
+/* =====================================================
+   PERSON B – ANNUAL LUMP SUM
+===================================================== */
+
+function annualFV(annual, years, rate) {
+
+    const r = rate / 100;
+
+    if (r === 0) {
+
+        return annual * years;
+
+    }
+
+    return annual *
+        (
+            (Math.pow(1 + r, years) - 1) / r
+        );
+
+}
+
+
+/* =====================================================
+   YEARLY DATA
+===================================================== */
+
+function annualRows(
+    monthly,
+    annual,
+    years,
+    rate
+) {
+
+    const rows = [];
+
+    for (let y = 1; y <= years; y++) {
+
+        rows.push({
+
+            year: y,
+
+            aContrib:
+                monthly * 12 * y,
+
+            aValue:
+                monthlyFV(
+                    monthly,
+                    y,
+                    rate
+                ),
+
+            bContrib:
+                annual * y,
+
+            bValue:
+                annualFV(
+                    annual,
+                    y,
+                    rate
+                )
+
+        });
+
+    }
+
+    return rows;
+
+}
+
+
+/* =====================================================
+   MAIN CALCULATION
+===================================================== */
+
+function calculate() {
+
+    const monthly =
+        Number(document.getElementById("monthly").value) || 0;
+
+    const annual =
+        Number(document.getElementById("annual").value) || 0;
+
+    const years =
+        Number(document.getElementById("years").value) || 1;
+
+    const rate =
+        Number(document.getElementById("rate").value) || 0;
+
+
+    /* Final values */
+
+    const a =
+        monthlyFV(
+            monthly,
+            years,
+            rate
+        );
+
+    const b =
+        annualFV(
+            annual,
+            years,
+            rate
+        );
+
+
+    /* Summary */
+
+    document.getElementById("aFinal").textContent =
+        money(a);
+
+    document.getElementById("bFinal").textContent =
+        money(b);
+
+    document.getElementById("difference").textContent =
+        money(a - b);
+
+
+    document.getElementById("aContrib").textContent =
+        money(monthly * 12 * years);
+
+    document.getElementById("bContrib").textContent =
+        money(annual * years);
+
+
+    const aGain =
+        a - (monthly * 12 * years);
+
+    const bGain =
+        b - (annual * years);
+
+
+    document.getElementById("gainDiff").textContent =
+        money(aGain - bGain);
+
+
+    /* =================================================
+       COMPARISON TABLE
+    ================================================= */
+
+    const rows =
+        annualRows(
+            monthly,
+            annual,
+            years,
+            rate
+        );
+
+
+    document.getElementById("comparisonBody").innerHTML =
+        rows.map(r => `
+
+            <tr>
+
+                <td>${r.year}</td>
+
+                <td>${money(r.aContrib)}</td>
+
+                <td>${money(r.aValue)}</td>
+
+                <td>${money(r.bContrib)}</td>
+
+                <td>${money(r.bValue)}</td>
+
+            </tr>
+
+        `).join("");
+
+
+    /* =================================================
+       SCENARIO ANALYSIS
+    ================================================= */
+
+    const scenarios = [
+
+        [
+            "Lower",
+            Math.max(0, rate - 2)
+        ],
+
+        [
+            "Expected",
+            rate
+        ],
+
+        [
+            "Higher",
+            rate + 2
+        ]
+
+    ];
+
+
+    document.getElementById("scenarioBody").innerHTML =
+
+        scenarios.map(s => {
+
+            const av =
+                monthlyFV(
+                    monthly,
+                    years,
+                    s[1]
+                );
+
+            const bv =
+                annualFV(
+                    annual,
+                    years,
+                    s[1]
+                );
+
+
+            return `
+
+            <tr>
+
+                <td>${s[0]}</td>
+
+                <td>${s[1].toFixed(1)}%</td>
+
+                <td>${money(av)}</td>
+
+                <td>${money(bv)}</td>
+
+                <td>${money(av - bv)}</td>
+
+            </tr>
+
+            `;
+
+        }).join("");
+
+
+    /* =================================================
+       CHECKPOINTS
+    ================================================= */
+
+    document.getElementById("a5").textContent =
+        money(
+            monthlyFV(
+                monthly,
+                5,
+                rate
+            )
+        );
+
+
+    document.getElementById("a10").textContent =
+        money(
+            monthlyFV(
+                monthly,
+                10,
+                rate
+            )
+        );
+
+
+    document.getElementById("a20").textContent =
+        money(
+            monthlyFV(
+                monthly,
+                20,
+                rate
+            )
+        );
+
+
+    /* =================================================
+       LONG TERM TABLE
+    ================================================= */
+
+    document.getElementById("longBody").innerHTML =
+
+        rows.map(r => `
+
+            <tr>
+
+                <td>${r.year}</td>
+
+                <td>${money(r.aValue)}</td>
+
+                <td>${money(r.bValue)}</td>
+
+                <td>${money(r.aValue - r.bValue)}</td>
+
+            </tr>
+
+        `).join("");
+
+
+    /* =================================================
+       SENSITIVITY ANALYSIS
+    ================================================= */
+
+    const sensitivityAmounts = [
+
+        200,
+        300,
+        500,
+        750,
+        1000,
+        1500,
+        2000
+
+    ];
+
+
+    document.getElementById("sensitivityBody").innerHTML =
+
+        sensitivityAmounts.map(m => {
+
+            const value =
+                monthlyFV(
+                    m,
+                    years,
+                    rate
+                );
+
+            const contribution =
+                m * 12 * years;
+
+            const gain =
+                value - contribution;
+
+
+            return `
+
+            <tr>
+
+                <td>${money(m)}</td>
+
+                <td>${money(contribution)}</td>
+
+                <td>${money(value)}</td>
+
+                <td>${money(gain)}</td>
+
+            </tr>
+
+            `;
+
+        }).join("");
+
+
+    /* =================================================
+       CHART
+    ================================================= */
+
+    const labels =
+        rows.map(r => "Year " + r.year);
+
+    const personA =
+        rows.map(r => r.aValue);
+
+    const personB =
+        rows.map(r => r.bValue);
+
+
+    if (chart) {
+
+        chart.destroy();
+
+    }
+
+
+    chart = new Chart(
+
+        document.getElementById("growthChart"),
+
+        {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "Person A – Monthly Investment",
+
+                        data:
+                            personA,
+
+                        tension:
+                            0.25
+
+                    },
+
+                    {
+
+                        label:
+                            "Person B – Annual Lump Sum",
+
+                        data:
+                            personB,
+
+                        tension:
+                            0.25
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    }
+
+                },
+
+
+                scales: {
+
+                    y: {
+
+                        ticks: {
+
+                            callback:
+                                function(value) {
+
+                                    return "RM" +
+                                        Number(value)
+                                        .toLocaleString();
+
+                                }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+
+/* =====================================================
+   VARIABLE PRICE FUND
+===================================================== */
+
+function variableCalc() {
+
+    const investment =
+        Number(
+            document.getElementById("vpInvest").value
+        ) || 0;
+
+
+    const purchaseNAV =
+        Number(
+            document.getElementById("vpBuy").value
+        ) || 0;
+
+
+    const sellingNAV =
+        Number(
+            document.getElementById("vpSell").value
+        ) || 0;
+
+
+    const distributionRate =
+        Number(
+            document.getElementById("vpRate").value
+        ) || 0;
+
+
+    let units = 0;
+
+
+    if (purchaseNAV > 0) {
+
+        units =
+            investment / purchaseNAV;
+
+    }
+
+
+    const marketValue =
+        units * sellingNAV;
+
+
+    const distribution =
+        marketValue *
+        distributionRate / 100;
+
+
+    const totalGain =
+        marketValue +
+        distribution -
+        investment;
+
+
+    document.getElementById("vpUnits").textContent =
+
+        units.toLocaleString(
+            "en-MY",
+            {
+                maximumFractionDigits: 4
+            }
+        );
+
+
+    document.getElementById("vpValue").textContent =
+        money(marketValue);
+
+
+    document.getElementById("vpGain").textContent =
+        money(totalGain);
+
+}
+
+
+/* =====================================================
+   ZAKAT
+===================================================== */
+
+function zakatCalc() {
+
+    const balance =
+        Number(
+            document.getElementById("zBalance").value
+        ) || 0;
+
+
+    const nisab =
+        Number(
+            document.getElementById("zNisab").value
+        ) || 0;
+
+
+    const zakatRate =
+        Number(
+            document.getElementById("zRate").value
+        ) || 0;
+
+
+    const reachesNisab =
+        balance >= nisab;
+
+
+    const zakat =
+        reachesNisab
+            ? balance * zakatRate / 100
+            : 0;
+
+
+    const netAmount =
+        balance - zakat;
+
+
+    document.getElementById("zakat").textContent =
+        money(zakat);
+
+
+    document.getElementById("zNet").textContent =
+        money(netAmount);
+
+
+    document.getElementById("zStatus").textContent =
+
+        reachesNisab
+            ? "Illustratively reaches nisab"
+            : "Below illustrative nisab";
+
+}
+
+
+/* =====================================================
+   PDF REPORT
+===================================================== */
+
+function downloadPDF() {
+
+    const { jsPDF } =
+        window.jspdf;
+
+
+    const monthly =
+        Number(
+            document.getElementById("monthly").value
+        ) || 0;
+
+
+    const annual =
+        Number(
+            document.getElementById("annual").value
+        ) || 0;
+
+
+    const years =
+        Number(
+            document.getElementById("years").value
+        ) || 1;
+
+
+    const rate =
+        Number(
+            document.getElementById("rate").value
+        ) || 0;
+
+
+    const personA =
+        monthlyFV(
+            monthly,
+            years,
+            rate
+        );
+
+
+    const personB =
+        annualFV(
+            annual,
+            years,
+            rate
+        );
+
+
+    const doc =
+        new jsPDF();
+
+
+    let y = 18;
+
+
+    doc.setFontSize(18);
+
+    doc.text(
+        "ASNB Investment Analysis Report",
+        15,
+        y
+    );
+
+
+    y += 12;
+
+
+    doc.setFontSize(11);
+
+
+    const lines = [
+
+        `Person A monthly investment: ${money(monthly)}`,
+
+        `Person B annual lump-sum investment: ${money(annual)}`,
+
+        `Investment period: ${years} years`,
+
+        `Illustrative dividend/distribution rate: ${rate}%`,
+
+        "",
+
+        `Person A final value: ${money(personA)}`,
+
+        `Person B final value: ${money(personB)}`,
+
+        `Difference (A - B): ${money(personA - personB)}`,
+
+        "",
+
+        "This report is an educational mathematical illustration.",
+
+        "Actual ASNB distribution calculations may use specific product rules.",
+
+        "Zakat treatment should be verified with the relevant authority."
+
+    ];
+
+
+    lines.forEach(line => {
+
+        doc.text(
+            line,
+            15,
+            y
+        );
+
+        y += 7;
+
+    });
+
+
+    doc.save(
+        "ASNB_Investment_Analysis_Report.pdf"
+    );
+
+}
+
+
+/* =====================================================
+   INITIAL CALCULATION
+===================================================== */
+
+calculate();
+
+variableCalc();
+
+zakatCalc();
+
+</script>
+
+</body>
+</html>
